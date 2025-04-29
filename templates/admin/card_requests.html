@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Pending Card Requests</h2>
+    
+    {% if requests %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Request Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requests %}
+                    <tr>
+                        <td>{{ request[0] }}</td>
+                        <td>{{ request[3] }}</td>
+                        <td>${{ "%.2f"|format(request[4]|float) }}</td>
+                        <td>{{ request[6] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('approve_card', card_id=request[0]) }}" class="d-inline">
+                                <div class="mb-2">
+                                    <input type="text" class="form-control form-control-sm mb-1" name="card_number" placeholder="Card Number (16 digits)" pattern="[0-9]{16}" required>
+                                    <input type="text" class="form-control form-control-sm mb-1" name="expiry_date" placeholder="Expiry Date (MM/YY)" pattern="(0[1-9]|1[0-2])\/([0-9]{2})" required>
+                                    <input type="text" class="form-control form-control-sm mb-1" name="cvv" placeholder="CVV (3 digits)" pattern="[0-9]{3}" required>
+                                    <input type="number" class="form-control form-control-sm mb-1" name="validity_months" placeholder="Validity (months)" min="1" max="60" required>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_card', card_id=request[0]) }}" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            There are no pending card requests.
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

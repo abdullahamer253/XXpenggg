@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Invest{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Create Investment</h2>
+                <div class="alert alert-info">
+                    <strong>Investment Terms:</strong>
+                    <ul class="mb-0">
+                        <li>2% monthly interest rate</li>
+                        <li>Funds are locked during the investment period</li>
+                        <li>Interest is paid at the end of the term</li>
+                    </ul>
+                </div>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Investment Amount (USD)</label>
+                        <input type="number" class="form-control" id="amount" name="amount" 
+                               min="100" step="0.01" required>
+                        <div class="form-text">Available balance: USD {{ "%.2f"|format(current_user.balance_usd) }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="period" class="form-label">Investment Period (Months)</label>
+                        <select class="form-select" id="period" name="period" required>
+                            <option value="3">3 months</option>
+                            <option value="6">6 months</option>
+                            <option value="12">12 months</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Estimated Returns</h6>
+                                <p class="card-text mb-0">
+                                    Monthly Interest: 2%<br>
+                                    <small class="text-muted">Final amount will depend on the investment period</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Create Investment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .credit-card {
+        perspective: 1000px;
+        width: 100%;
+        max-width: 1000px;
+        height: 350px;
+        margin: 0 auto;
+    }
+
+    .credit-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: left;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+        cursor: pointer;
+    }
+
+    .credit-card.flipped .credit-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .credit-card-front, .credit-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 20px;
+        padding: 25px;
+        background: linear-gradient(45deg, #1a1a1a, #2c2c2c);
+        color: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        overflow: hidden;
+    }
+
+    .credit-card-back {
+        transform: rotateY(180deg);
+        background: linear-gradient(45deg, #2c2c2c, #1a1a1a);
+    }
+
+    .card-logo {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 40px;
+        color: #ffd700;
+        letter-spacing: 1px;
+    }
+
+    .card-number {
+        font-size: 22px;
+        letter-spacing: 3px;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    }
+
+    .card-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-top: 20px;
+    }
+
+    .card-info-item {
+        text-transform: uppercase;
+    }
+
+    .text-muted {
+        color: #aaa !important;
+        font-size: 12px;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+    }
+
+    .card-cvv {
+        background: #ffffff;
+        color: #000;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 2px;
+    }
+
+    .card-amount {
+        position: absolute;
+        bottom: 25px;
+        right: 150px;
+        font-size: 24px;
+        color: #ffd700;
+        font-weight: bold;
+    }
+
+    .badge.bg-success {
+        background-color: #28a745 !important;
+        padding: 5px 10px;
+        font-size: 12px;
+        border-radius: 4px;
+    }
+
+    .card-back-content {
+
+    }
+
+    .magnetic-stripe {
+        background: #333;
+        height: 40px;
+        margin: -25px -25px 30px -25px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Credit Cards</h2>
+    
+    {% if cards %}
+        <div class="row">
+            {% for card in cards %}
+            <div class="col-md-6 mb-4">
+                <div class="credit-card" onclick="this.classList.toggle('flipped')">
+                    <div class="credit-card-inner">
+                        <div class="credit-card-front">
+                            <div class="card-logo">ABM BANK</div>
+                            <div class="card-number">
+                                **** **** **** {{ card[1][-4:] }}
+                            </div>
+                            <div class="card-info">
+                                <div class="card-info-item">
+                                    <div class="text-muted">Expiry Date</div>
+                                    {{ card[2] }}
+                                </div>
+                                <div class="card-info-item">
+                                    <div class="text-muted">Status</div>
+                                    <span class="badge bg-success">{{ card[6] }}</span>
+                                </div>
+                            </div>
+                            <div class="card-amount">
+                                ${{ "%.2f"|format(card[5]|float) }}
+                            </div>
+                        </div>
+                        <div class="credit-card-back">
+                            <div class="magnetic-stripe"></div>
+                            <div class="card-back-content">
+                                <div>
+                                    <div class="text-muted mb-2">Card Number</div>
+                                    <div class="card-number">{{ card[1] }}</div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="text-muted mb-2">CVV</div>
+                                    <div class="card-cvv">{{ card[3] }}</div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="text-muted mb-2">Approved On</div>
+                                    {{ card[8] }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            You don't have any approved credit cards yet.
+        </div>
+    {% endif %}
+    
+    <div class="mt-3">
+        <a href="{{ url_for('request_card') }}" class="btn btn-primary">Request New Card</a>
+    </div>
+</div>
+
+<script>
+    // Add touch support for mobile devices
+    document.querySelectorAll('.credit-card').forEach(card => {
+        card.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.classList.toggle('flipped');
+        });
+    });
+</script>
+{% endblock %} 

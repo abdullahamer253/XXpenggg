@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Transfer Money{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Transfer Money</h3>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <div class="alert alert-info">
+                        <strong>Available Balance:</strong> ${{ "%.2f"|format(current_user.balance_usd) }}
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('transfer') }}">
+                        <div class="mb-3">
+                            <label for="recipient_username" class="form-label">Recipient Username</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="recipient_username" name="recipient_username" 
+                                       placeholder="Enter username" required>
+                                <span class="input-group-text">@ABM.Bank</span>
+                            </div>
+                            <div class="form-text">Enter the recipient's username (e.g., john)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount (USD)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="amount" name="amount" 
+                                       min="0.01" step="0.01" required>
+                            </div>
+                            <div class="form-text">Enter the amount to transfer</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Transfer Money</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Request Card{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Request New Credit Card</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Card Amount (USD)</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-text">
+                        <ul class="mb-0">
+                            <li>A ${{ "%.2f"|format(CARD_ISSUANCE_FEE) }} issuance fee will be charged to your account</li>
+                            <li>Your current balance: ${{ "%.2f"|format(current_user.balance) }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Request Card</button>
+                <a href="{{ url_for('my_cards') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 
